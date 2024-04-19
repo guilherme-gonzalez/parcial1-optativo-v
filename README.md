@@ -1,7 +1,7 @@
 # .NET API Project outline
 
 ## Description
-In this project we are building a simple CRUD and list .NET API that interacts with a PostreSQL database in a docker container.
+In this project we are building a simple CRUD and list .NET API that interacts with a PostreSQL docker container.
 
 ## Directories
 
