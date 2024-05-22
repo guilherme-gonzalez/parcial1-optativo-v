@@ -1,6 +1,7 @@
 using Repository.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services.Logica
 {
@@ -8,16 +9,16 @@ namespace Services.Logica
     {
         private readonly ClienteRepository _clienteRepository;
 
-        public ClienteService(string connectionString)
+        public ClienteService(Repository.Context.ContextAppDB context)
         {
-            _clienteRepository = new ClienteRepository(connectionString);
+            _clienteRepository = new ClienteRepository(context);
         }
 
-        public bool Add(ClienteModel modelo)
+        public async Task<bool> AddAsync(ClienteModel modelo)
         {
             if (ValidacionCliente(modelo))
             {
-                return _clienteRepository.add(modelo);
+                return await _clienteRepository.AddAsync(modelo);
             }
             else
             {
@@ -25,16 +26,16 @@ namespace Services.Logica
             }
         }
 
-        public ClienteModel Get(int id)
+        public async Task<ClienteModel> GetAsync(int id)
         {
-            return _clienteRepository.get(id);
+            return await _clienteRepository.GetAsync(id);
         }
 
-        public bool Update(ClienteModel modelo)
+        public async Task<bool> UpdateAsync(ClienteModel modelo)
         {
             if (ValidacionCliente(modelo))
             {
-                return _clienteRepository.update(modelo);
+                return await _clienteRepository.UpdateAsync(modelo);
             }
             else
             {
@@ -42,11 +43,11 @@ namespace Services.Logica
             }
         }
 
-        public bool Delete(ClienteModel modelo)
+        public async Task<bool> DeleteAsync(ClienteModel modelo)
         {
             if (modelo != null)
             {
-                return _clienteRepository.remove(modelo);
+                return await _clienteRepository.RemoveAsync(modelo);
             }
             else
             {
@@ -54,11 +55,11 @@ namespace Services.Logica
             }
         }
         
-        public IEnumerable<ClienteModel> list()
+        public async Task<IEnumerable<ClienteModel>> ListAsync()
         {
             try
             {
-                return _clienteRepository.list();
+                return await _clienteRepository.ListAsync();
             }
             catch (Exception ex)
             {

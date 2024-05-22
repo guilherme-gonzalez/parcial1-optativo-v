@@ -1,6 +1,7 @@
 using Repository.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services.Logica
 {
@@ -8,16 +9,16 @@ namespace Services.Logica
     {
         private readonly FacturaRepository _facturaRepository;
 
-        public FacturaService(string connectionString)
+        public FacturaService(Repository.Context.ContextAppDB context)
         {
-            _facturaRepository = new FacturaRepository(connectionString);
+            _facturaRepository = new FacturaRepository(context);
         }
 
-        public bool Add(FacturaModel modelo)
+        public async Task<bool> AddAsync(FacturaModel modelo)
         {
             if (ValidacionFactura(modelo))
             {
-                return _facturaRepository.add(modelo);
+                return await _facturaRepository.AddAsync(modelo);
             }
             else
             {
@@ -25,16 +26,16 @@ namespace Services.Logica
             }
         }
 
-        public FacturaModel Get(int id)
+        public async Task<FacturaModel> GetAsync(int id)
         {
-            return _facturaRepository.get(id);
+            return await _facturaRepository.GetAsync(id);
         }
 
-        public bool Update(FacturaModel modelo)
+        public async Task<bool> UpdateAsync(FacturaModel modelo)
         {
             if (ValidacionFactura(modelo))
             {
-                return _facturaRepository.update(modelo);
+                return await _facturaRepository.UpdateAsync(modelo);
             }
             else
             {
@@ -42,11 +43,11 @@ namespace Services.Logica
             }
         }
 
-        public bool Delete(FacturaModel modelo)
+        public async Task<bool> DeleteAsync(FacturaModel modelo)
         {
             if (modelo != null)
             {
-                return _facturaRepository.remove(modelo);
+                return await _facturaRepository.RemoveAsync(modelo);
             }
             else
             {
@@ -54,11 +55,11 @@ namespace Services.Logica
             }
         }
         
-        public IEnumerable<FacturaModel> list()
+        public async Task<IEnumerable<FacturaModel>> ListAsync()
         {
             try
             {
-                return _facturaRepository.list();
+                return await _facturaRepository.ListAsync();
             }
             catch (Exception ex)
             {

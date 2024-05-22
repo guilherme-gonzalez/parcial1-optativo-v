@@ -8,10 +8,10 @@ namespace Repository.Data
 {
     public interface ICliente
     {
-        bool add(ClienteModel cliente);
-        bool remove(ClienteModel cliente);
-        bool update(ClienteModel cliente);
-        ClienteModel get(int id);
-        IEnumerable<ClienteModel> list();
+        Task<bool> AddAsync(ClienteModel cliente);
+        Task<bool> RemoveAsync(ClienteModel cliente);
+        Task<bool> UpdateAsync(ClienteModel cliente);
+        Task<ClienteModel> GetAsync(int id);
+        Task<IEnumerable<ClienteModel>> ListAsync();
     }
 }

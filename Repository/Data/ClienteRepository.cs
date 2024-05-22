@@ -3,33 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Data
 {
     public class ClienteRepository : ICliente
     {
-        private IDbConnection conexionDB;
+        private readonly DbContext _context;
 
-        public ClienteRepository(string _connectionString)
+        public ClienteRepository(DbContext context)
         {
-            conexionDB = new DbConection(_connectionString).dbConnection();
+            _context = context;
         }
 
-        public bool add(ClienteModel cliente)
+        public async Task<bool> AddAsync(ClienteModel cliente)
         {
             try
             {
-                //var cmd = conexionDB.CreateCommand();
-                //cmd.CommandText = */
-                
-                var query = @"INSERT INTO Cliente(nombre, id_banco, apellido, documento, direccion, mail, celular, estado) 
-VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @Estado)";
-                if (conexionDB.Execute(query, cliente) > 0)
-                    return true;
-                else
-                    return false;
+                await _context.AddAsync(cliente);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -37,15 +30,13 @@ VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @E
             }
         }
 
-        public bool remove(ClienteModel cliente)
+        public async Task<bool> RemoveAsync(ClienteModel cliente)
         {
             try
             {
-                var query = "DELETE FROM Cliente WHERE Id = @Id";
-                if (conexionDB.Execute(query, cliente) > 0)
-                    return true;
-                else
-                    return false;
+                _context.Remove(cliente);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -53,24 +44,13 @@ VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @E
             }
         }
 
-        public bool update(ClienteModel cliente)
+        public async Task<bool> UpdateAsync(ClienteModel cliente)
         {
             try
             {
-                var query = @"UPDATE Cliente SET
-                              id_banco = @Id_banco,
-                              nombre = @Nombre, 
-                              apellido = @Apellido, 
-                              documento = @Documento, 
-                              direccion = @Direccion, 
-                              mail = @Mail, 
-                              celular = @Celular, 
-                              estado = @Estado 
-                              WHERE Id = @Id";
-                if (conexionDB.Execute(query, cliente) > 0)
-                    return true;
-                else
-                    return false;
+                _context.Update(cliente);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -78,12 +58,11 @@ VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @E
             }
         }
 
-        public ClienteModel get(int id)
+        public async Task<ClienteModel> GetAsync(int id)
         {
             try
             {
-                var query = "SELECT * FROM Cliente WHERE Id = @Id";
-                return conexionDB.QueryFirstOrDefault<ClienteModel>(query, new { Id = id });
+                return await _context.Set<ClienteModel>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -91,12 +70,11 @@ VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @E
             }
         }
 
-        public IEnumerable<ClienteModel> list()
+        public async Task<IEnumerable<ClienteModel>> ListAsync()
         {
             try
             {
-                var query = "SELECT * FROM Cliente";
-                return conexionDB.Query<ClienteModel>(query);
+                return await _context.Set<ClienteModel>().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -105,4 +83,3 @@ VALUES(@Nombre,@Id_banco, @Apellido, @Documento, @Direccion, @Mail, @Celular, @E
         }
     }
 }
-

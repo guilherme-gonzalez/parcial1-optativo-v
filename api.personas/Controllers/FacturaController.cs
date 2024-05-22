@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Repository.Data;
 using Services.Logica;
-using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace api.personas.Controllers
 {
@@ -11,25 +11,25 @@ namespace api.personas.Controllers
     public class FacturaController : Controller
     {
         private FacturaService facturaService;
-
-        public FacturaController(IConfiguration configuracion)
+        
+        public FacturaController(Repository.Context.ContextAppDB context)
         {
-            facturaService = new FacturaService(configuracion.GetConnectionString("postgres"));
+            facturaService = new FacturaService(context);
         }
 
         // POST
         [HttpPost("AddFactura")]
-        public ActionResult Add(FacturaModel factura)
+        public async Task<ActionResult> AddAsync(FacturaModel factura)
         {
-            facturaService.Add(factura);
+            await facturaService.AddAsync(factura);
             return View();
         }
 
         // GET
         [HttpGet("GetFactura/{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> GetAsync(int id)
         {
-            var factura = facturaService.Get(id);
+            var factura = await facturaService.GetAsync(id);
             if (factura == null)
             {
                 return NotFound();
@@ -39,35 +39,36 @@ namespace api.personas.Controllers
 
         // PUT
         [HttpPut("UpdateFactura/{id}")]
-        public ActionResult Update(int id, FacturaModel factura)
+        public async Task<ActionResult> UpdateAsync(int id, FacturaModel factura)
         {
             if (id != factura.Id)
             {
                 return BadRequest();
             }
-            facturaService.Update(factura);
+            await facturaService.UpdateAsync(factura);
             return NoContent();
         }
 
         // DELETE
         [HttpDelete("DeleteFactura/{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            var factura = facturaService.Get(id);
+            var factura = await facturaService.GetAsync(id);
             if (factura == null)
             {
                 return NotFound();
             }
-            facturaService.Delete(factura);
+            await facturaService.DeleteAsync(factura);
             return NoContent();
         }
-        // List All Facturas
+        
+        // LIST
         [HttpGet("ListFacturas")]
-        public ActionResult List()
+        public async Task<ActionResult> ListAsync()
         {
             try
             {
-                var facturas = facturaService.list();
+                var facturas = await facturaService.ListAsync();
                 return Ok(facturas);
             }
             catch (Exception ex)

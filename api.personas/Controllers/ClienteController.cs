@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Repository.Data;
 using Services.Logica;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace api.personas.Controllers
 {
@@ -12,24 +13,24 @@ namespace api.personas.Controllers
     {
         private ClienteService clienteService;
         
-        public ClienteController(IConfiguration configuracion)
+        public ClienteController(Repository.Context.ContextAppDB context)
         {
-            clienteService = new ClienteService(configuracion.GetConnectionString("postgres"));
+            clienteService = new ClienteService(context);
         }
 
         // POST
         [HttpPost("Add")]
-        public ActionResult Add(ClienteModel cliente)
+        public async Task<ActionResult> AddAsync(ClienteModel cliente)
         {
-            clienteService.Add(cliente);
+            await clienteService.AddAsync(cliente);
             return View();
         }
 
         // GET
         [HttpGet("Get/{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> GetAsync(int id)
         {
-            var cliente = clienteService.Get(id);
+            var cliente = await clienteService.GetAsync(id);
             if (cliente == null)
             {
                 return NotFound();
@@ -39,36 +40,36 @@ namespace api.personas.Controllers
 
         // PUT
         [HttpPut("Update/{id}")]
-        public ActionResult Update(int id, ClienteModel cliente)
+        public async Task<ActionResult> UpdateAsync(int id, ClienteModel cliente)
         {
             if (id != cliente.Id)
             {
                 return BadRequest();
             }
-            clienteService.Update(cliente);
+            await clienteService.UpdateAsync(cliente);
             return NoContent();
         }
 
         // DELETE
         [HttpDelete("Delete/{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            var cliente = clienteService.Get(id);
+            var cliente = await clienteService.GetAsync(id);
             if (cliente == null)
             {
                 return NotFound();
             }
-            clienteService.Delete(cliente);
+            await clienteService.DeleteAsync(cliente);
             return NoContent();
         }
         
         // LIST
         [HttpGet("List")]
-        public ActionResult List()
+        public async Task<ActionResult> ListAsync()
         {
             try
             {
-                var clientes = clienteService.list();
+                var clientes = await clienteService.ListAsync();
                 return Ok(clientes);
             }
             catch (Exception ex)

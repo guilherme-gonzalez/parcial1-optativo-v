@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Data
 {
     public class FacturaRepository : IFactura
     {
-        private readonly IDbConnection conexionDB;
+        private readonly DbContext _context;
 
-        public FacturaRepository(string _connectionString)
+        public FacturaRepository(DbContext context)
         {
-            conexionDB = new DbConection(_connectionString).dbConnection();
+            _context = context;
         }
 
-        public bool add(FacturaModel factura)
+        public async Task<bool> AddAsync(FacturaModel factura)
         {
             try
             {
-                var query = @"INSERT INTO Factura(id_cliente, nro_factura, fecha_hora, total, total_iva5, total_iva10, total_iva, total_letras, sucursal) 
-                              VALUES(@Id_cliente, @Nro_factura, @Fecha_hora, @Total, @Total_iva5, @Total_iva10, @Total_iva, @Total_letras, @Sucursal)";
-                return conexionDB.Execute(query, factura) > 0;
+                await _context.AddAsync(factura);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -31,12 +30,13 @@ namespace Repository.Data
             }
         }
 
-        public bool remove(FacturaModel factura)
+        public async Task<bool> RemoveAsync(FacturaModel factura)
         {
             try
             {
-                var query = "DELETE FROM Factura WHERE Id = @Id";
-                return conexionDB.Execute(query, factura) > 0;
+                _context.Remove(factura);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -44,22 +44,13 @@ namespace Repository.Data
             }
         }
 
-        public bool update(FacturaModel factura)
+        public async Task<bool> UpdateAsync(FacturaModel factura)
         {
             try
             {
-                var query = @"UPDATE Factura SET 
-                              id_cliente = @Id_cliente, 
-                              nro_factura = @Nro_factura, 
-                              fecha_hora = @Fecha_hora, 
-                              total = @Total, 
-                              total_iva5 = @Total_iva5, 
-                              total_iva10 = @Total_iva10, 
-                              total_iva = @Total_iva, 
-                              total_letras = @Total_letras, 
-                              sucursal = @Sucursal 
-                              WHERE Id = @Id";
-                return conexionDB.Execute(query, factura) > 0;
+                _context.Update(factura);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -67,12 +58,11 @@ namespace Repository.Data
             }
         }
 
-        public FacturaModel get(int id)
+        public async Task<FacturaModel> GetAsync(int id)
         {
             try
             {
-                var query = "SELECT * FROM Factura WHERE Id = @Id";
-                return conexionDB.QueryFirstOrDefault<FacturaModel>(query, new { Id = id });
+                return await _context.Set<FacturaModel>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -80,12 +70,11 @@ namespace Repository.Data
             }
         }
 
-        public IEnumerable<FacturaModel> list()
+        public async Task<IEnumerable<FacturaModel>> ListAsync()
         {
             try
             {
-                var query = "SELECT * FROM Factura";
-                return conexionDB.Query<FacturaModel>(query);
+                return await _context.Set<FacturaModel>().ToListAsync();
             }
             catch (Exception ex)
             {
