@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/guilhermegonzalez/RiderProjects/api.persona-optativo-v/Repository/Repository.csproj": {}
+    "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/Repository.csproj": {}
   },
   "projects": {
-    "/Users/guilhermegonzalez/RiderProjects/api.persona-optativo-v/Repository/Repository.csproj": {
+    "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/guilhermegonzalez/RiderProjects/api.persona-optativo-v/Repository/Repository.csproj",
+        "projectUniqueName": "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/Repository.csproj",
         "projectName": "Repository",
-        "projectPath": "/Users/guilhermegonzalez/RiderProjects/api.persona-optativo-v/Repository/Repository.csproj",
+        "projectPath": "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/Repository.csproj",
         "packagesPath": "/Users/guilhermegonzalez/.nuget/packages/",
-        "outputPath": "/Users/guilhermegonzalez/RiderProjects/api.persona-optativo-v/Repository/obj/",
+        "outputPath": "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/guilhermegonzalez/.nuget/NuGet/NuGet.Config"
@@ -42,21 +42,43 @@
               "target": "Package",
               "version": "[2.1.35, )"
             },
+            "EFCore.CheckConstraints": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.5.0-preview2-24180-01, )"
+            },
             "Microsoft.Bcl.AsyncInterfaces": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.19, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.19, )"
             },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
             },
             "Npgsql": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[7.0.7, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[7.0.1, )"
             },
             "System.Buffers": {
               "target": "Package",
@@ -64,7 +86,7 @@
             },
             "System.Diagnostics.DiagnosticSource": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
             },
             "System.Memory": {
               "target": "Package",
@@ -76,11 +98,11 @@
             },
             "System.Text.Encodings.Web": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
             },
             "System.Text.Json": {
               "target": "Package",
-              "version": "[9.0.0-preview.3.24172.9, )"
+              "version": "[7.0.19, )"
             },
             "System.Threading.Tasks.Extensions": {
               "target": "Package",
