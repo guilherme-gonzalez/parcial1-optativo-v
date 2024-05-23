@@ -1,7 +1,11 @@
 # .NET API Project outline
 
 ## Description
-In this project we are building a simple CRUD and list .NET API that interacts with a PostreSQL docker container.
+**PARCIAL 1 =>** In this project we are building a simple CRUD and list .NET API that interacts with a PostreSQL docker container using Dapper.
+
+**PARCIAL 2 =>** Instead of Dapper we are now using EntityFramework and adding ORMs instead of manually executing DDL statements on the database, and also we have Migrations setup with ```dotnet ef```
+
+The Interfaces, Models, Repositories, Services and Controllers were all modified to use EntityFramework.
 
 ## Directories
 
@@ -28,6 +32,8 @@ api.personas
   
 ```bash
 Repository
+├── Context
+│   └── ContextAppDB.cs
 ├── DDL
 │   ├── cliente.sql
 │   └── factura.sql
@@ -39,6 +45,10 @@ Repository
 │   ├── FacturaRepository.cs
 │   ├── ICliente.cs
 │   └── IFactura.cs
+├── Migrations
+│   ├── 20240522183604_InitialMigration.Designer.cs
+│   ├── 20240522183604_InitialMigration.cs
+│   └── ContextAppDBModelSnapshot.cs
 ```
 ```bash
 Services
@@ -46,8 +56,65 @@ Services
 │   ├── ClienteService.cs
 │   └── FacturaService.cs
 ```
-## DDL statements
-#### cliente.sql
+## Transitioning from Dapper to EntityFramework
+
+DDL statements are now replaced by ORMs, and we now have database migrations setup using ```dotnet ef```
+
+```C#
+#Repository/Data/ClienteModel.cs
+public class ClienteModel
+    {
+        public int Id { get; set; }
+        public string id_banco { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        public string nombre { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        public string apellido { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        public string documento { get; set; }
+
+        public string direccion { get; set; }
+        public string mail { get; set; }
+
+        [StringLength(10)]
+        [RegularExpression("^[0-9]+$")]
+        public string celular { get; set; }
+
+        public string estado { get; set; }
+    }
+```
+```C#
+#Repository/Context/ContextAppDB.cs
+using Microsoft.EntityFrameworkCore;
+using Repository.Data;
+
+namespace Repository.Context
+{
+    public class ContextAppDB : DbContext
+    {
+        public DbSet<ClienteModel> Clientes { get; set; }
+        public DbSet<FacturaModel> Facturas { get; set; } 
+
+        public ContextAppDB(DbContextOptions<ContextAppDB> options) : base(options)
+        {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ClienteModel>().ToTable("cliente");
+            modelBuilder.Entity<FacturaModel>().ToTable("factura");
+        }
+    }
+}
+```
+
+#### Old DDL statement that was previously manually executed "```cliente.sql```"
 ```sql
 CREATE TABLE IF NOT EXISTS public.cliente (
       id serial4 PRIMARY KEY,
@@ -61,21 +128,15 @@ CREATE TABLE IF NOT EXISTS public.cliente (
       estado VARCHAR(255)
 );
 ```
-#### factura.sql
-```sql
-CREATE TABLE IF NOT EXISTS public.factura (
-        id serial4 PRIMARY KEY,
-        id_cliente VARCHAR(255) NOT NULL,
-        nro_factura VARCHAR(255) NOT NULL CHECK (nro_factura ~ '^[0-9]{3}-[0-9]{3}-[0-9]{6}$'),
-        fecha_hora TIMESTAMP NOT NULL,
-        total NUMERIC NOT NULL,
-        total_iva5 NUMERIC NOT NULL,
-        total_iva10 NUMERIC NOT NULL,
-        total_iva NUMERIC NOT NULL,
-        total_letras VARCHAR(255) NOT NULL CHECK (char_length(total_letras) >= 6),
-        sucursal VARCHAR(255)
-    );
-```
+## EntityFramework Screenshots 
+### Changed Dapper to EntityFramework
+![img](Swagger_screenshots/ef1.png)
+
+### dotnet ef database update
+![img](Swagger_screenshots/ef2.png)
+
+### Checking Migration History in postgres
+![img](Swagger_screenshots/ef3.png)
 ## Swagger Screenshots
 
 ### Swagger UI
