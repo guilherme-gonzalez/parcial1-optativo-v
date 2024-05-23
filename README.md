@@ -61,7 +61,7 @@ Services
 DDL statements are now replaced by ORMs, and we now have database migrations setup using ```dotnet ef```
 
 ```C#
-#Repository/Data/ClienteModel.cs
+//Repository/Data/ClienteModel.cs
 public class ClienteModel
     {
         public int Id { get; set; }
@@ -90,7 +90,7 @@ public class ClienteModel
     }
 ```
 ```C#
-#Repository/Context/ContextAppDB.cs
+//Repository/Context/ContextAppDB.cs
 using Microsoft.EntityFrameworkCore;
 using Repository.Data;
 
