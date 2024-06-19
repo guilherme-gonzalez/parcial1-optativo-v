@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "gtydWztHPF9Uv2hEmQ9MUcA/e/AuEailJaubxSbhdkUwjNHnNeomU/rB1HFCC51p649ItUsFXlLnEDfkPkxB8w==",
+  "dgSpecHash": "BJ2L5L0LosaBzDD8tSEO+uPx/yOu0i57+FBR0VMZMuA0SGVGygNA+4J/LSQPdipYd+tBh4zTO0mLaEHBvTnblw==",
   "success": true,
   "projectFilePath": "/Users/guilhermegonzalez/RiderProjects/parcial1-optativo-v/Repository/Repository.csproj",
   "expectedPackageFiles": [
     "/Users/guilhermegonzalez/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
     "/Users/guilhermegonzalez/.nuget/packages/efcore.checkconstraints/7.0.2/efcore.checkconstraints.7.0.2.nupkg.sha512",
     "/Users/guilhermegonzalez/.nuget/packages/entityframework/6.5.0-preview2-24180-01/entityframework.6.5.0-preview2-24180-01.nupkg.sha512",
+    "/Users/guilhermegonzalez/.nuget/packages/fluentvalidation/11.9.2/fluentvalidation.11.9.2.nupkg.sha512",
+    "/Users/guilhermegonzalez/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.9.2/fluentvalidation.dependencyinjectionextensions.11.9.2.nupkg.sha512",
     "/Users/guilhermegonzalez/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/guilhermegonzalez/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "/Users/guilhermegonzalez/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",

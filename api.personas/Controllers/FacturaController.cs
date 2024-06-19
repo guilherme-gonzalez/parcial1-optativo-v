@@ -2,34 +2,40 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Repository.Data;
 using Services.Logica;
+using Repository.Context;
 using System.Threading.Tasks;
 
 namespace api.personas.Controllers
 {
-    //[ApiController]
-    //[Route("[controller]")]
-    public class FacturaController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class FacturaController : ControllerBase
     {
-        private FacturaService facturaService;
-        
-        public FacturaController(Repository.Context.ContextAppDB context)
+        private readonly FacturaService _facturaService;
+
+        public FacturaController(ContextAppDB context)
         {
-            facturaService = new FacturaService(context);
+            _facturaService = new FacturaService(context);
         }
 
         // POST
         [HttpPost("AddFactura")]
-        public async Task<ActionResult> AddAsync(FacturaModel factura)
+        public async Task<ActionResult> AddAsync([FromBody] FacturaModel factura)
         {
-            await facturaService.AddAsync(factura);
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _facturaService.AddAsync(factura);
+            return Ok("Factura added successfully");
         }
 
         // GET
         [HttpGet("GetFactura/{id}")]
         public async Task<ActionResult> GetAsync(int id)
         {
-            var factura = await facturaService.GetAsync(id);
+            var factura = await _facturaService.GetAsync(id);
             if (factura == null)
             {
                 return NotFound();
@@ -39,13 +45,19 @@ namespace api.personas.Controllers
 
         // PUT
         [HttpPut("UpdateFactura/{id}")]
-        public async Task<ActionResult> UpdateAsync(int id, FacturaModel factura)
+        public async Task<ActionResult> UpdateAsync(int id, [FromBody] FacturaModel factura)
         {
             if (id != factura.Id)
             {
-                return BadRequest();
+                return BadRequest("ID mismatch");
             }
-            await facturaService.UpdateAsync(factura);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _facturaService.UpdateAsync(factura);
             return NoContent();
         }
 
@@ -53,22 +65,23 @@ namespace api.personas.Controllers
         [HttpDelete("DeleteFactura/{id}")]
         public async Task<ActionResult> DeleteAsync(int id)
         {
-            var factura = await facturaService.GetAsync(id);
+            var factura = await _facturaService.GetAsync(id);
             if (factura == null)
             {
                 return NotFound();
             }
-            await facturaService.DeleteAsync(factura);
+
+            await _facturaService.DeleteAsync(factura);
             return NoContent();
         }
-        
+
         // LIST
         [HttpGet("ListFacturas")]
         public async Task<ActionResult> ListAsync()
         {
             try
             {
-                var facturas = await facturaService.ListAsync();
+                var facturas = await _facturaService.ListAsync();
                 return Ok(facturas);
             }
             catch (Exception ex)

@@ -50,6 +50,10 @@
               "target": "Package",
               "version": "[6.5.0-preview2-24180-01, )"
             },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.9.2, )"
+            },
             "Microsoft.Bcl.AsyncInterfaces": {
               "target": "Package",
               "version": "[7.0.19, )"
