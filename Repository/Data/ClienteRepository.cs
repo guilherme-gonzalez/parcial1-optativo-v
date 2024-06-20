@@ -1,26 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Repository.Context;
 
 namespace Repository.Data
 {
     public class ClienteRepository : ICliente
     {
-        private readonly DbContext _context;
+        private readonly ContextAppDB _context;
 
-        public ClienteRepository(DbContext context)
+        public ClienteRepository(ContextAppDB context)
         {
             _context = context;
+        }
+
+        public async Task<bool> IsDocumentoUniqueAsync(string documento)
+        {
+            return !await _context.Clientes.AnyAsync(c => c.documento == documento);
         }
 
         public async Task<bool> AddAsync(ClienteModel cliente)
         {
             try
             {
-                await _context.AddAsync(cliente);
+                await _context.Clientes.AddAsync(cliente);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -34,7 +38,7 @@ namespace Repository.Data
         {
             try
             {
-                _context.Remove(cliente);
+                _context.Clientes.Remove(cliente);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -48,7 +52,7 @@ namespace Repository.Data
         {
             try
             {
-                _context.Update(cliente);
+                _context.Clientes.Update(cliente);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -62,7 +66,7 @@ namespace Repository.Data
         {
             try
             {
-                return await _context.Set<ClienteModel>().FindAsync(id);
+                return await _context.Clientes.FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -74,7 +78,7 @@ namespace Repository.Data
         {
             try
             {
-                return await _context.Set<ClienteModel>().ToListAsync();
+                return await _context.Clientes.ToListAsync();
             }
             catch (Exception ex)
             {

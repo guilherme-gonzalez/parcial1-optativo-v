@@ -13,5 +13,6 @@ namespace Repository.Data
         Task<bool> UpdateAsync(ClienteModel cliente);
         Task<ClienteModel> GetAsync(int id);
         Task<IEnumerable<ClienteModel>> ListAsync();
+        Task<bool> IsDocumentoUniqueAsync(string documento);
     }
 }

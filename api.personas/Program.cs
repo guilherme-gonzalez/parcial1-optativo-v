@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using api.personas.Validation; // Make sure this matches your namespace for the validators
+using api.personas.Validation; // Ensure this matches your namespace for the validators
+using Repository.Data; // Add this for repository access
+using Services.Logica; // Add this for service access
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,10 @@ builder.Services.AddDbContext<Repository.Context.ContextAppDB>(options =>
     options.UseNpgsql(connString);
     options.UseValidationCheckConstraints();
 });
+
+// Register the ClienteRepository and ClienteService
+builder.Services.AddScoped<ICliente, ClienteRepository>();
+builder.Services.AddScoped<ClienteService>();
 
 // Register FluentValidation
 builder.Services.AddFluentValidationAutoValidation();

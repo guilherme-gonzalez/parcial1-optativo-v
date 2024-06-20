@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Repository.Data;
 using Services.Logica;
-using Repository.Context;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace api.personas.Controllers
 {
@@ -11,32 +11,39 @@ namespace api.personas.Controllers
     [Route("[controller]")]
     public class ClienteController : ControllerBase
     {
-        private readonly ClienteService _clienteService;
+        private readonly ICliente _clienteRepository;
+        private readonly IValidator<ClienteModel> _validator;
 
-        public ClienteController(ContextAppDB context)
+        public ClienteController(ICliente clienteRepository, IValidator<ClienteModel> validator)
         {
-            _clienteService = new ClienteService(context);
+            _clienteRepository = clienteRepository;
+            _validator = validator;
         }
 
         // POST
         [HttpPost("Add")]
-        public async Task<ActionResult> AddAsync([FromBody] ClienteModel cliente)
+        public async Task<ActionResult> AddAsync(ClienteModel cliente)
         {
-            if (!ModelState.IsValid)
+            ValidationResult result = await _validator.ValidateAsync(cliente);
+            if (!result.IsValid)
             {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
                 return BadRequest(ModelState);
             }
 
-            await _clienteService.AddAsync(cliente);
-            return Ok("Cliente added successfully");
+            await _clienteRepository.AddAsync(cliente);
+            return Ok();
         }
 
         // GET
         [HttpGet("Get/{id}")]
         public async Task<ActionResult> GetAsync(int id)
         {
-            var cliente = await _clienteService.GetAsync(id);
-            if (cliente == null)
+            var cliente = await _clienteRepository.GetAsync(id);
+            if (cliente == null || !string.Equals(cliente.estado, "active", StringComparison.OrdinalIgnoreCase))
             {
                 return NotFound();
             }
@@ -45,19 +52,24 @@ namespace api.personas.Controllers
 
         // PUT
         [HttpPut("Update/{id}")]
-        public async Task<ActionResult> UpdateAsync(int id, [FromBody] ClienteModel cliente)
+        public async Task<ActionResult> UpdateAsync(int id, ClienteModel cliente)
         {
             if (id != cliente.Id)
             {
-                return BadRequest("ID mismatch");
+                return BadRequest();
             }
 
-            if (!ModelState.IsValid)
+            ValidationResult result = await _validator.ValidateAsync(cliente);
+            if (!result.IsValid)
             {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
                 return BadRequest(ModelState);
             }
 
-            await _clienteService.UpdateAsync(cliente);
+            await _clienteRepository.UpdateAsync(cliente);
             return NoContent();
         }
 
@@ -65,29 +77,30 @@ namespace api.personas.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> DeleteAsync(int id)
         {
-            var cliente = await _clienteService.GetAsync(id);
+            var cliente = await _clienteRepository.GetAsync(id);
             if (cliente == null)
             {
                 return NotFound();
             }
-
-            await _clienteService.DeleteAsync(cliente);
+            await _clienteRepository.RemoveAsync(cliente);
             return NoContent();
         }
-
+        
         // LIST
         [HttpGet("List")]
         public async Task<ActionResult> ListAsync()
         {
             try
             {
-                var clientes = await _clienteService.ListAsync();
-                return Ok(clientes);
+                var clientes = await _clienteRepository.ListAsync();
+                var activeClientes = clientes.Where(cliente => string.Equals(cliente.estado, "active", StringComparison.OrdinalIgnoreCase));
+                return Ok(activeClientes);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
     }
 }

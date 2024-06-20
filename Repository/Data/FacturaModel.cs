@@ -15,7 +15,7 @@ namespace Repository.Data
         public string nro_factura { get; set; }
 
         [Required]
-        public DateTime fecha_hora { get; set; }
+        public string fecha_hora { get; set; }
 
         [Required]
         public decimal total { get; set; }

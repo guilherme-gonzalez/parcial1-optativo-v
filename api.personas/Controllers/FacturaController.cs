@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using FluentValidation;
 using Repository.Data;
 using Services.Logica;
 using Repository.Context;
@@ -12,18 +13,26 @@ namespace api.personas.Controllers
     public class FacturaController : ControllerBase
     {
         private readonly FacturaService _facturaService;
+        private readonly IValidator<FacturaModel> _validator;
 
-        public FacturaController(ContextAppDB context)
+        public FacturaController(ContextAppDB context, IValidator<FacturaModel> validator)
         {
             _facturaService = new FacturaService(context);
+            _validator = validator;
         }
 
         // POST
         [HttpPost("AddFactura")]
         public async Task<ActionResult> AddAsync([FromBody] FacturaModel factura)
         {
-            if (!ModelState.IsValid)
+            var validationResult = await _validator.ValidateAsync(factura);
+
+            if (!validationResult.IsValid)
             {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
                 return BadRequest(ModelState);
             }
 
@@ -52,8 +61,14 @@ namespace api.personas.Controllers
                 return BadRequest("ID mismatch");
             }
 
-            if (!ModelState.IsValid)
+            var validationResult = await _validator.ValidateAsync(factura);
+
+            if (!validationResult.IsValid)
             {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
                 return BadRequest(ModelState);
             }
 

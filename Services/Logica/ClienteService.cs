@@ -14,6 +14,11 @@ namespace Services.Logica
             _clienteRepository = new ClienteRepository(context);
         }
 
+        public async Task<bool> IsDocumentoUnique(string documento)
+        {
+            return await _clienteRepository.IsDocumentoUniqueAsync(documento);
+        }
+
         public async Task<bool> AddAsync(ClienteModel modelo)
         {
             if (ValidacionCliente(modelo))
@@ -54,7 +59,7 @@ namespace Services.Logica
                 return false;
             }
         }
-        
+
         public async Task<IEnumerable<ClienteModel>> ListAsync()
         {
             try
