@@ -136,7 +136,7 @@ namespace api.personas.Validation
 
 ## And if you input something wrong, Swagger will output a simple to understand error message
 ![img](./Swagger_screenshots/validation2.png)
-![img](./Swagger_screenshots/validation3.png)
+![img](./Swagger_screenshots/Validation3.png)
 
 ```C#
 //Services/Validations/FacturaValidation.cs
